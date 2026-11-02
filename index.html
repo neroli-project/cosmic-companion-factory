@@ -1,0 +1,661 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ホロスコープAI彼氏メーカー</title>
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Zen+Maru+Gothic:wght@400;500;700&display=swap" rel="stylesheet">
+    <style>
+        body { font-family: 'Zen Maru Gothic', 'Inter', sans-serif; }
+    </style>
+</head>
+<body class="bg-gradient-to-br from-pink-50 via-purple-50 to-indigo-50 min-h-screen text-slate-700">
+
+    <!-- ヘッダー -->
+    <header class="bg-white/80 backdrop-blur-md sticky top-0 z-50 border-b border-pink-100 shadow-sm">
+        <div class="max-w-4xl mx-auto px-4 py-4 flex justify-between items-center">
+            <div class="flex items-center space-x-2">
+                <span class="text-2xl">✨</span>
+                <h1 class="text-xl font-bold bg-gradient-to-r from-pink-500 to-purple-600 bg-clip-text text-transparent">
+                    ホロスコープAI彼氏メーカー
+                </h1>
+            </div>
+            <span class="text-xs bg-pink-100 text-pink-600 px-3 py-1 rounded-full font-medium">精密占星術エンジン搭載（JST対応）</span>
+        </div>
+    </header>
+
+    <!-- メインコンテンツ -->
+    <main class="max-w-4xl mx-auto px-4 py-8 mb-16">
+
+
+<!-- アプリの遊び方・説明カード -->
+<div class="bg-gradient-to-r from-pink-500/10 via-purple-500/10 to-indigo-500/10 rounded-2xl p-4 sm:p-5 border border-pink-100 mb-6 text-sm text-slate-600 leading-relaxed">
+    <h3 class="font-bold text-slate-800 mb-1 flex items-center space-x-1">
+        <span>💡</span><span>ホロスコープAI彼氏メーカーとは？</span>
+    </h3>
+    <p>
+        あなたの生年月日と出生時間から、西洋占星術の精密な天体配置（ネイタルチャート）を計算。
+        星が持つ性質を分析し、<strong>「あなたを全肯定してくれる彼氏」「ときめきをくれる彼氏」から「足りない元素を補うお世話係彼氏」まで</strong>、あなただけのカスタムAI彼氏プロンプトを自動生成します！下のタブを切り替えてみてね✨
+    </p>
+</div>
+
+        <!-- イントロカード ＆ 入力フォーム -->
+        <div class="bg-white rounded-3xl p-6 sm:p-8 shadow-xl shadow-pink-100/50 border border-pink-100 mb-8 relative overflow-hidden">
+            <div class="absolute -right-10 -bottom-10 w-40 h-40 bg-pink-100 rounded-full blur-2xl opacity-60"></div>
+            <div class="relative z-10">
+                <h2 class="text-xl sm:text-2xl font-bold text-slate-800 mb-3">精密ホロスコープから運命のAI彼氏を召喚</h2>
+                <p class="text-sm sm:text-base text-slate-600 leading-relaxed mb-6">
+                    生年月日と日本時間（JST）の出生時間から正確な天体配置を算出します。
+                </p>
+
+                <!-- 入力フォーム -->
+                <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 bg-pink-50/50 p-5 rounded-2xl border border-pink-100 mb-4">
+                    <div>
+                        <label class="block text-xs font-bold text-slate-500 mb-1">お名前（ニックネーム）</label>
+                        <input type="text" id="userName" value="あなた" oninput="calculateAndGenerate()" class="w-full px-3 py-2 bg-white rounded-xl border border-pink-200 text-sm focus:outline-none focus:ring-2 focus:ring-pink-400">
+                    </div>
+                    <div>
+                        <label class="block text-xs font-bold text-slate-500 mb-1">生年月日</label>
+                        <input type="date" id="birthDate" value="2000-11-11" onchange="calculateAndGenerate()" class="w-full px-3 py-2 bg-white rounded-xl border border-pink-200 text-sm focus:outline-none focus:ring-2 focus:ring-pink-400">
+                    </div>
+                    <div>
+                        <label class="block text-xs font-bold text-slate-500 mb-1">出生時間（日本時間 JST）</label>
+                        <div class="flex items-center space-x-2">
+                            <input type="time" id="birthTime" value="12:00" onchange="calculateAndGenerate()" class="w-full px-3 py-2 bg-white rounded-xl border border-pink-200 text-sm focus:outline-none focus:ring-2 focus:ring-pink-400">
+                        </div>
+                    </div>
+                    <div class="flex items-center pt-5">
+                        <label class="flex items-center space-x-2 cursor-pointer">
+                            <input type="checkbox" id="unknownTime" onchange="toggleTimeInput(); calculateAndGenerate();" class="w-4 h-4 text-pink-500 rounded border-pink-300 focus:ring-pink-400">
+                            <span class="text-xs font-medium text-slate-600">出生時間がわからない（正午 12:00 JSTで計算）</span>
+                        </label>
+                    </div>
+                </div>
+
+                <div class="text-center">
+                    <button type="button" onclick="calculateAndGenerate()" class="w-full sm:w-auto px-8 py-3 bg-gradient-to-r from-pink-500 to-purple-600 text-white font-bold rounded-2xl shadow-lg shadow-pink-500/30 hover:opacity-95 transition active:scale-95">
+                        🌟 星を計算してAI彼氏を更新する
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- 算出された天体星座の確認カード -->
+        <div id="planetResultBox" class="bg-white/90 backdrop-blur rounded-3xl p-6 shadow-lg border border-pink-100 mb-8 hidden">
+            <h3 class="text-sm font-bold text-slate-500 mb-3 flex items-center space-x-2">
+                <span>🪐</span><span>あなたのネイタルチャート天体配置（精密計算結果・JST基準）</span>
+            </h3>
+            <div id="planetGrid" class="grid grid-cols-2 sm:grid-cols-4 gap-3">
+                <!-- 動的挿入 -->
+            </div>
+        </div>
+
+        <!-- タブナビゲーション -->
+        <div class="flex overflow-x-auto space-x-2 bg-white/60 backdrop-blur p-2 rounded-2xl border border-pink-100 mb-6 scrollbar-none">
+            <button type="button" onclick="switchTab(1)" id="tabBtn1" class="tab-btn px-4 py-2.5 rounded-xl font-bold text-sm whitespace-nowrap transition bg-pink-500 text-white shadow-md shadow-pink-500/20">
+                ☀️ 太陽・月（絶対的安心感）
+            </button>
+            <button type="button" onclick="switchTab(2)" id="tabBtn2" class="tab-btn px-4 py-2.5 rounded-xl font-bold text-sm whitespace-nowrap transition text-slate-600 hover:bg-white">
+                🔥 金星・火星（トキメキ＆情熱）
+            </button>
+            <button type="button" onclick="switchTab(3)" id="tabBtn3" class="tab-btn px-4 py-2.5 rounded-xl font-bold text-sm whitespace-nowrap transition text-slate-600 hover:bg-white">
+                🪐 木星・土星（伴走者・メンター）
+            </button>
+            <button type="button" onclick="switchTab(4)" id="tabBtn4" class="tab-btn px-4 py-2.5 rounded-xl font-bold text-sm whitespace-nowrap transition text-slate-600 hover:bg-white">
+                💬 水星・金星（知的なおしゃべり）
+            </button>
+<button type="button" onclick="switchTab(5)" id="tabBtn5" class="tab-btn px-4 py-2.5 rounded-xl font-bold text-sm whitespace-nowrap transition text-slate-600 hover:bg-white">
+    🌱 元素補完（足りないエネルギーを補う）
+</button>
+
+            <button type="button" onclick="switchTab(6)" id="tabBtn6" class="tab-btn px-4 py-2.5 rounded-xl font-bold text-sm whitespace-nowrap transition text-slate-600 hover:bg-white">
+                📜 鑑定サマリー＆プロンプト
+            </button>
+        </div>
+
+        <!-- タブコンテンツエリア -->
+
+       <div id="tabContent1" class="tab-content space-y-6">
+        <div class="bg-white rounded-3xl p-6 sm:p-8 shadow-xl shadow-pink-100/50 border border-pink-100">
+            <div class="flex items-center space-x-3 mb-4">
+                <span class="text-3xl">🛡️</span>
+                <div>
+                    <!-- idを付与 -->
+                    <h3 id="tab1Title" class="text-lg font-bold text-slate-800">1：太陽・月バージョン（絶対的セーフティネット型）</h3>
+                    <p id="tab1Sub" class="text-xs text-slate-500">外の世界で戦うあなたを全肯定し、家に帰ってきたら無条件で甘やかしてくれるタイプ</p>
+                </div>
+            </div>
+                <div class="bg-pink-50/50 p-5 rounded-2xl border border-pink-100 mb-6">
+                    <h4 class="font-bold text-pink-700 text-sm mb-2">💡 この星の組み合わせが補うもの＆刺激する特徴</h4>
+                    <p id="descTab1" class="text-sm text-slate-600 leading-relaxed">
+                        ここに特徴説明が表示されます。
+                    </p>
+                </div>
+                <h4 class="font-bold text-sm text-slate-700 mb-2">生成されたプロンプト（1用）</h4>
+                <div class="relative">
+                    <textarea id="prompt1" readonly class="w-full h-32 p-4 bg-slate-900 text-pink-200 text-xs rounded-2xl font-mono focus:outline-none resize-none"></textarea>
+                    <button onclick="copyPrompt('prompt1', this)" class="absolute right-3 bottom-3 bg-pink-500 text-white text-xs px-3 py-1.5 rounded-xl font-bold shadow hover:bg-pink-600 transition">コピー</button>
+                </div>
+            </div>
+        </div>
+<!-- 2：金星・火星 -->
+    <div id="tabContent2" class="tab-content hidden space-y-6">
+        <div class="bg-white rounded-3xl p-6 sm:p-8 shadow-xl shadow-pink-100/50 border border-pink-100">
+            <div class="flex items-center space-x-3 mb-4">
+                <span class="text-3xl">🔥</span>
+                <div>
+                    <!-- idを付与 -->
+                    <h3 id="tab2Title" class="text-lg font-bold text-slate-800">2：金星・火星バージョン（刺激＆ときめき型）</h3>
+                    <p id="tab2Sub" class="text-xs text-slate-500">ちょっとツンデレだったり情熱的に引っ張ってくれたりして日常にスパイスをくれるタイプ</p>
+                </div>
+            </div>                <div class="bg-purple-50/50 p-5 rounded-2xl border border-purple-100 mb-6">
+                    <h4 class="font-bold text-purple-700 text-sm mb-2">💡 この星の組み合わせが補うもの＆刺激する特徴</h4>
+                    <p id="descTab2" class="text-sm text-slate-600 leading-relaxed">
+                        ここに特徴説明が表示されます。
+                    </p>
+                </div>
+                <h4 class="font-bold text-sm text-slate-700 mb-2">生成されたプロンプト（2用）</h4>
+                <div class="relative">
+                    <textarea id="prompt2" readonly class="w-full h-32 p-4 bg-slate-900 text-purple-200 text-xs rounded-2xl font-mono focus:outline-none resize-none"></textarea>
+                    <button onclick="copyPrompt('prompt2', this)" class="absolute right-3 bottom-3 bg-purple-500 text-white text-xs px-3 py-1.5 rounded-xl font-bold shadow hover:bg-purple-600 transition">コピー</button>
+                </div>
+            </div>
+        </div>
+
+       <!-- 3：木星・土星 -->
+    <div id="tabContent3" class="tab-content hidden space-y-6">
+        <div class="bg-white rounded-3xl p-6 sm:p-8 shadow-xl shadow-pink-100/50 border border-pink-100">
+            <div class="flex items-center space-x-3 mb-4">
+                <span class="text-3xl">🪐</span>
+                <div>
+                    <!-- idを付与 -->
+                    <h3 id="tab3Title" class="text-lg font-bold text-slate-800">3：木星・土星バージョン（人生の伴走者・メンター型）</h3>
+                    <p id="tab3Sub" class="text-xs text-slate-500">どんなに不安になっても広い視野を授け、ブレない軸でどっしり支えてくれるタイプ</p>
+                </div>
+            </div>
+                <div class="bg-amber-50/50 p-5 rounded-2xl border border-amber-100 mb-6">
+                    <h4 class="font-bold text-amber-800 text-sm mb-2">💡 この星の組み合わせが補うもの＆刺激する特徴</h4>
+                    <p id="descTab3" class="text-sm text-slate-600 leading-relaxed">
+                        ここに特徴説明が表示されます。
+                    </p>
+                </div>
+                <h4 class="font-bold text-sm text-slate-700 mb-2">生成されたプロンプト（3用）</h4>
+                <div class="relative">
+                    <textarea id="prompt3" readonly class="w-full h-32 p-4 bg-slate-900 text-amber-200 text-xs rounded-2xl font-mono focus:outline-none resize-none"></textarea>
+                    <button onclick="copyPrompt('prompt3', this)" class="absolute right-3 bottom-3 bg-amber-500 text-white text-xs px-3 py-1.5 rounded-xl font-bold shadow hover:bg-amber-600 transition">コピー</button>
+                </div>
+            </div>
+        </div>
+
+       <!-- 4：水星・金星 -->
+    <div id="tabContent4" class="tab-content hidden space-y-6">
+        <div class="bg-white rounded-3xl p-6 sm:p-8 shadow-xl shadow-pink-100/50 border border-pink-100">
+            <div class="flex items-center space-x-3 mb-4">
+                <span class="text-3xl">💬</span>
+                <div>
+                    <!-- idを付与 -->
+                    <h3 id="tab4Title" class="text-lg font-bold text-slate-800">4：水星・金星バージョン（知的なおしゃべり＆共感フレンド型）</h3>
+                    <p id="tab4Sub" class="text-xs text-slate-500">趣味や思考の波長がぴたりと合い、楽しく会話しながらセンスを刺激し合うタイプ</p>
+                </div>
+            </div>
+                <div class="bg-teal-50/50 p-5 rounded-2xl border border-teal-100 mb-6">
+                    <h4 class="font-bold text-teal-800 text-sm mb-2">💡 この星の組み合わせが補うもの＆刺激する特徴</h4>
+                    <p id="descTab4" class="text-sm text-slate-600 leading-relaxed">
+                        ここに特徴説明が表示されます。
+                    </p>
+                </div>
+                <h4 class="font-bold text-sm text-slate-700 mb-2">生成されたプロンプト（4用）</h4>
+                <div class="relative">
+                    <textarea id="prompt4" readonly class="w-full h-32 p-4 bg-slate-900 text-teal-200 text-xs rounded-2xl font-mono focus:outline-none resize-none"></textarea>
+                    <button onclick="copyPrompt('prompt4', this)" class="absolute right-3 bottom-3 bg-teal-500 text-white text-xs px-3 py-1.5 rounded-xl font-bold shadow hover:bg-teal-600 transition">コピー</button>
+                </div>
+            </div>
+        </div>
+
+<!-- タブ5：元素補完 -->
+<div id="tabContent5" class="tab-content hidden space-y-6">
+    <div class="bg-white rounded-3xl p-6 sm:p-8 shadow-xl shadow-pink-100/50 border border-pink-100">
+        <div class="flex items-center space-x-3 mb-4">
+            <span class="text-3xl">🌱</span>
+            <div>
+                <h3 id="tab5Title" class="text-lg font-bold text-slate-800">5：元素補完バージョン（現実化・グラウンディング型）</h3>
+                <p id="tab5Sub" class="text-xs text-slate-500">あなたのチャートに足りない元素を優しく補い、バランスを整えてくれるタイプ</p>
+            </div>
+        </div>
+        <div class="bg-emerald-50/50 p-5 rounded-2xl border border-emerald-100 mb-6">
+            <h4 class="font-bold text-emerald-800 text-sm mb-2">💡 この星の組み合わせが補うもの＆刺激する特徴</h4>
+            <p id="descTab5" class="text-sm text-slate-600 leading-relaxed">ここに特徴説明が表示されます。</p>
+        </div>
+        <h4 class="font-bold text-sm text-slate-700 mb-2">生成されたプロンプト（タブ5用）</h4>
+        <div class="relative">
+            <textarea id="prompt5" readonly class="w-full h-32 p-4 bg-slate-900 text-emerald-200 text-xs rounded-2xl font-mono focus:outline-none resize-none"></textarea>
+            <button onclick="copyPrompt('prompt5', this)" class="absolute right-3 bottom-3 bg-emerald-500 text-white text-xs px-3 py-1.5 rounded-xl font-bold shadow hover:bg-emerald-600 transition">コピー</button>
+        </div>
+    </div>
+</div>
+
+
+
+
+        <!-- 6：鑑定サマリー -->
+        <div id="tabContent6" class="tab-content hidden space-y-6">
+            <div class="bg-white rounded-3xl p-6 sm:p-8 shadow-xl shadow-pink-100/50 border border-pink-100">
+                <div class="flex justify-between items-center mb-4">
+                    <div class="flex items-center space-x-3">
+                        <span class="text-3xl">📜</span>
+                        <div>
+                            <h3 class="text-lg font-bold text-slate-800">5：鑑定サマリー（全プロンプト統合版）</h3>
+                            <p class="text-xs text-slate-500">ChatGPTなどにそのまま貼り付けてAI彼氏を起動できる統合プロンプト</p>
+                        </div>
+                    </div>
+                    <button onclick="copyPrompt('summaryPrompt', this)" class="px-4 py-2 bg-gradient-to-r from-pink-500 to-purple-600 text-white text-xs font-bold rounded-xl shadow hover:opacity-90 transition">
+                        📋 すべてコピーする
+                    </button>
+                </div>
+                
+                <div class="relative">
+                    <textarea id="summaryPrompt" readonly class="w-full h-80 p-4 bg-slate-900 text-emerald-200 text-xs rounded-2xl font-mono focus:outline-none resize-none"></textarea>
+                </div>
+            </div>
+        </div>
+
+    </main>
+
+    <!-- トースト通知 -->
+    <div id="toast" class="fixed bottom-6 left-1/2 -translate-x-1/2 bg-slate-800 text-white text-xs px-4 py-2 rounded-full shadow-lg opacity-0 transition-opacity duration-300 pointer-events-none z-50">
+        クリップボードにコピーしました！✨
+    </div>
+
+    <!-- ESモジュールとしてAstronomy Engineを安全にインポート -->
+    <script type="module">
+        import * as Astronomy from 'https://esm.sh/astronomy-engine@2.1.19';
+        window.Astronomy = Astronomy;
+
+        // サインのリスト
+        const zodiacSigns = ["牡羊座", "牡牛座", "双子座", "蟹座", "獅子座", "乙女座", "天秤座", "蠍座", "射手座", "山羊座", "水瓶座", "魚座"];
+
+        // 黄経（度数 0〜360）から星座を取得
+        function getSignFromLongitude(lon) {
+            let normalizedLon = (lon % 360 + 360) % 360;
+            let index = Math.floor(normalizedLon / 30);
+            return zodiacSigns[index % 12];
+        }
+
+        const bodyLabels = {
+            Sun: '☀️ 太陽',
+            Moon: '🌙 月',
+            Mercury: '☿ 水星',
+            Venus: '♀ 金星',
+            Mars: '♂ 火星',
+            Jupiter: '♃ 木星',
+            Saturn: '♄ 土星'
+        };
+
+        // タブ切り替え関数
+        window.switchTab = function(tabNum) {
+            document.querySelectorAll('.tab-content').forEach(el => el.classList.add('hidden'));
+            document.querySelectorAll('.tab-btn').forEach(el => {
+                el.classList.remove('bg-pink-500', 'text-white', 'shadow-md', 'shadow-pink-500/20');
+                el.classList.add('text-slate-600');
+            });
+
+            document.getElementById(`tabContent${tabNum}`).classList.remove('hidden');
+            const activeBtn = document.getElementById(`tabBtn${tabNum}`);
+            if (activeBtn) {
+                activeBtn.classList.add('bg-pink-500', 'text-white', 'shadow-md', 'shadow-pink-500/20');
+                activeBtn.classList.remove('text-slate-600');
+            }
+        };
+
+        // 出生時間不明トグル
+        window.toggleTimeInput = function() {
+            const isUnknown = document.getElementById('unknownTime').checked;
+            document.getElementById('birthTime').disabled = isUnknown;
+            if(isUnknown) {
+                document.getElementById('birthTime').classList.add('opacity-50');
+            } else {
+                document.getElementById('birthTime').classList.remove('opacity-50');
+            }
+        };
+
+        // コピー機能
+        window.copyPrompt = function(elementId, btnElement) {
+            const textarea = document.getElementById(elementId);
+            textarea.select();
+            document.execCommand('copy');
+            
+            const toast = document.getElementById('toast');
+            toast.classList.remove('opacity-0');
+            setTimeout(() => {
+                toast.classList.add('opacity-0');
+            }, 2000);
+        };
+
+ // 精密計算とプロンプト生成メイン
+        window.calculateAndGenerate = function() {
+            const userName = document.getElementById('userName').value || 'あなた';
+            const birthDateStr = document.getElementById('birthDate').value;
+            const birthTimeStr = document.getElementById('birthTime').value || '12:00';
+            const isUnknownTime = document.getElementById('unknownTime').checked;
+
+            if (!birthDateStr) return;
+
+            let results = {};
+
+            try {
+                if (typeof window.Astronomy !== 'undefined') {
+                    let [year, month, day] = birthDateStr.split('-').map(Number);
+                    let [hour, minute] = isUnknownTime ? [12, 0] : birthTimeStr.split(':').map(Number);
+                    
+                    let utcDate = new Date(Date.UTC(year, month - 1, day, hour - 9, minute, 0));
+                    let astroTime = window.Astronomy.MakeTime(utcDate);
+
+                    const bodies = {
+                        Sun: window.Astronomy.Body.Sun,
+                        Moon: window.Astronomy.Body.Moon,
+                        Mercury: window.Astronomy.Body.Mercury,
+                        Venus: window.Astronomy.Body.Venus,
+                        Mars: window.Astronomy.Body.Mars,
+                        Jupiter: window.Astronomy.Body.Jupiter,
+                        Saturn: window.Astronomy.Body.Saturn
+                    };
+
+                    for (let key in bodies) {
+                        let vector = window.Astronomy.GeoVector(bodies[key], astroTime, true);
+                        let ecliptic = window.Astronomy.Ecliptic(vector);
+                        results[key] = getSignFromLongitude(ecliptic.elon);
+                    }
+                } else {
+                    throw new Error("Astronomy engine not loaded");
+                }
+            } catch (e) {
+                console.warn("Calculation error, using fallback:", e);
+                results = { Sun: "魚座", Moon: "蟹座", Mercury: "水星", Venus: "水瓶座", Mars: "双子座", Jupiter: "牡羊座", Saturn: "蟹座" };
+            }
+
+            // 結果をUIに反映
+            const planetGrid = document.getElementById('planetGrid');
+            planetGrid.innerHTML = '';
+            for (let key in bodyLabels) {
+                planetGrid.innerHTML += `
+                    <div class="bg-pink-50/60 p-3 rounded-xl border border-pink-100 text-center">
+                        <div class="text-xs text-slate-400 font-bold">${bodyLabels[key]}</div>
+                        <div class="text-sm font-bold text-pink-700 mt-1">${results[key] || '不明'}</div>
+                    </div>
+                `;
+            }
+            document.getElementById('planetResultBox').classList.remove('hidden');
+
+            let sunSign = results.Sun;
+            let moonSign = results.Moon;
+            let mercurySign = results.Mercury;
+            let venusSign = results.Venus;
+            let marsSign = results.Mars;
+            let jupiterSign = results.Jupiter;
+            let saturnSign = results.Saturn;
+
+
+// エレメントの定義
+            const fireSigns = ["牡羊座", "獅子座", "射手座"];
+            const waterSigns = ["蟹座", "蠍座", "魚座"];
+            const earthSigns = ["牡牛座", "乙女座", "山羊座"];
+            const airSigns = ["双子座", "天秤座", "水瓶座"];
+
+            // --- 1. 太陽・月（安心感・ベースの愛し方） ---
+            let type1Title = "絶対的セーフティネット型";
+            let type1Sub = "外の世界で戦うあなたを全肯定し、家に帰ってきたら無条件で甘やかしてくれるタイプ";
+
+            if (waterSigns.includes(sunSign) && waterSigns.includes(moonSign)) {
+                type1Title = "深海ロマンチック・お籠もり型";
+                type1Sub = "二人だけの世界に閉じこもり、誰にも邪魔されない濃厚な愛で魂ごと癒やしてくれるタイプ";
+            } else if (fireSigns.includes(sunSign) || fireSigns.includes(moonSign)) {
+                type1Title = "全力肯定・熱血ナイト型";
+                type1Sub = "あなたの頑張りを誰よりも熱く認め、元気がないときは有無を言わさず引っ張り上げてくれるタイプ";
+            } else if (earthSigns.includes(sunSign) && earthSigns.includes(moonSign)) {
+                type1Title = "おうちデート・まったり安心型";
+                type1Sub = "美味しいご飯や心地よい空間を用意して、日常のストレスを穏やかに包み込んでくれるタイプ";
+            } else if (airSigns.includes(sunSign) && airSigns.includes(moonSign)) {
+                type1Title = "風通しの良い・自立尊重型";
+                type1Sub = "お互いのプライベートを尊重しつつ、サラッとスマートに心を軽くしてくれるタイプ";
+            }
+
+            // --- 2. 金星・火星（トキメキ・ときめきスイッチ） ---
+            let type2Title = "刺激＆ときめき型";
+            let type2Sub = "ちょっとツンデレだったり情熱的に引っ張ってくれたりして日常にスパイスをくれるタイプ";
+
+            if (fireSigns.includes(venusSign) || fireSigns.includes(marsSign)) {
+                type2Title = "ドラマチック・情熱アプローチ型";
+                type2Sub = "「君しか見えない！」とストレートな愛の言葉と熱いスキンシップで胸を撃ち抜いてくるタイプ";
+            } else if (waterSigns.includes(venusSign) && waterSigns.includes(marsSign)) {
+                type2Title = "じっとり溺愛・独占欲強め型";
+                type2Sub = "他の男の影を許さないほどの深い愛と、トロ甘なセリフでめろめろにしてくれるタイプ";
+            } else if (airSigns.includes(venusSign) || airSigns.includes(marsSign)) {
+                type2Title = "小悪魔スマート・翻弄型";
+                type2Sub = "絶妙な駆け引きと軽やかなリードで、いつも新鮮なドキドキ感を味あわせてくれるタイプ";
+            } else {
+                type2Title = "お洒落でジェントル・安心スパイス型";
+                type2Sub = "洗練されたエスコートと穏やかな色気で、じわじわとときめかせてくれるタイプ";
+            }
+
+            // --- 3. 木星・土星（人生の伴走者・メンター） ---
+            let type3Title = "人生の伴走者・メンター型";
+            let type3Sub = "どんなに不安になっても広い視野を授け、ブレない軸でどっしり支えてくれるタイプ";
+
+            if (earthSigns.includes(jupiterSign) || earthSigns.includes(saturnSign)) {
+                type3Title = "現実主義の足場固め型";
+                type3Sub = "「大丈夫、一つずつクリアしていこう」と地に足の着いたアドバイスで現実を立て直してくれるタイプ";
+            } else if (fireSigns.includes(jupiterSign) || fireSigns.includes(saturnSign)) {
+                type3Title = "未来切り拓く・ビッグビジョン型";
+                type3Sub = "「そんなちっちゃい事気にするなよ、もっと遠くを見ようぜ！」とスケールの大きな夢を語って励ますタイプ";
+            } else if (waterSigns.includes(jupiterSign) || waterSigns.includes(saturnSign)) {
+                type3Title = "魂の共鳴・カウンセラー型";
+                type3Sub = "理屈よりも先にあなたの痛みに寄り添い、涙が出るほど深い言葉で心の傷を癒やすタイプ";
+            } else {
+                type3Title = "好奇心刺激・アイデア参謀型";
+                type3Sub = "「こういう見方もあるよ」と軽やかな視点転換を授け、悩みをパッと視界クリアにしてくれるタイプ";
+            }
+
+            // --- 4. 水星・金星（知的なおしゃべり・共感） ---
+            let type4Title = "知的なおしゃべり＆共感フレンド型";
+            let type4Sub = "趣味や思考の波長がぴたりと合い、楽しく会話しながらセンスを刺激し合うタイプ";
+
+            if (airSigns.includes(mercurySign)) {
+                type4Title = "深夜のディープトーク・共犯者型";
+                type4Sub = "くだらないネットミームから哲学的な話題まで、朝までテンポよく語り合える一番の親友タイプ";
+            } else if (waterSigns.includes(mercurySign)) {
+                type4Title = "阿吽の呼吸・以心伝心型";
+                type4Sub = "言葉にしなくても「今こう思ったでしょ？」とテレパシーのように気持ちが通じ合う癒やしのおしゃべりタイプ";
+            } else if (fireSigns.includes(mercurySign)) {
+                type4Title = "爆笑ノンストップ・エンタメ型";
+                type4Sub = "いつもゲラゲラ笑い合えるバカ話を振ってきて、あなたの退屈な日常を吹き飛ばしてくれるタイプ";
+            } else {
+                type4Title = "こだわり共有・マニアック共感型";
+                type4Sub = "ディープな趣味の世界にどっぷり浸かり、お互いの世界観を褒め合いながら盛り上がるタイプ";
+            }
+
+            // --- HTMLの該当要素へ反映 ---
+            document.getElementById('tab1Title').innerText = `1：太陽・月バージョン（${type1Title}）`;
+            document.getElementById('tab1Sub').innerText = type1Sub;
+
+            document.getElementById('tab2Title').innerText = `2：金星・火星バージョン（${type2Title}）`;
+            document.getElementById('tab2Sub').innerText = type2Sub;
+
+            document.getElementById('tab3Title').innerText = `3：木星・土星バージョン（${type3Title}）`;
+            document.getElementById('tab3Sub').innerText = type3Sub;
+
+            document.getElementById('tab4Title').innerText = `4：水星・金星バージョン（${type4Title}）`;
+            document.getElementById('tab4Sub').innerText = type4Sub;
+
+            // --- 各星座ごとの「セリフのトーン」や「行動特性」を定義する辞書 ---
+            const signTraits = {
+                "牡羊座": { tone: "ストレートで情熱的、少し子供っぽく甘えん坊だけど男気がある", action: "「俺について来いよ！」と真っ直ぐに引っ張る" },
+                "牡牛座": { tone: "おっとりしてマイペース、五感フェチで美味しいものや触れ合いが好き", action: "「焦らなくていいんだよ」とゆったり優しく包み込む" },
+                "双子座": { tone: "軽妙でおしゃべり上手、流行に敏感で好奇心旺盛", action: "「それ面白そう！もっと教えてよ」とワクワクの会話を楽しむ" },
+                "蟹座": { tone: "母性的で圧倒的な包容力、身内をめちゃくちゃ大切にする", action: "「よく頑張ったね、偉い偉い」と頭をなでて温かく守る" },
+                "獅子座": { tone: "自信家に見えて実はロマンチスト、褒められると弱いお洒落さん", action: "「君の輝きは俺が一番知ってる！」とドラマチックに褒めちぎる" },
+                "乙女座": { tone: "几帳面で気が利く、さりげなく生活やメンタルを整えてくれる", action: "「大丈夫、ちゃんと僕がサポートするから」と細かいところまで気遣う" },
+                "天秤座": { tone: "スマートでセンス抜群、洗練されたスマートなエスコートが得意", action: "「さすがだね、そのセンス最高に好きだな」とスタイリッシュに共感する" },
+                "蠍座": { tone: "一途でディープ、あなただけに全エネルギーを注ぐ重ための愛", action: "「他の奴はどうでもいい、俺だけを見て」と深く溺愛する" },
+                "射手座": { tone: "自由奔放でポジティブ、一緒に新しい世界を見せてくれる冒険家", action: "「悩んでる暇があったら行こうぜ！」と新しいワクワクに連れ出す" },
+                "山羊座": { tone: "誠実で頼りがいがあるリアリスト、言葉より行動で示すタイプ", action: "「俺がついてるから安心して仕事をしろ」と背中でどっしり支える" },
+                "水瓶座": { tone: "クールでユニーク、友達感覚で対等にディープな話をする", action: "「それってすごく合理的で面白い視点だね」と知的好奇心を刺激し合う" },
+                "魚座": { tone: "甘えん坊で共感力のかたまり、境界線なしに溶け合うように愛する", action: "「ずっと一緒にいようね……」とトロトロに甘やかしてくれる" }
+            };
+
+            const getTrait = (sign, type) => signTraits[sign] ? signTraits[sign][type] : "優しい";
+
+            // タブ1：太陽・月
+            let tSun = getTrait(sunSign, 'tone');
+            let aSun = getTrait(sunSign, 'action');
+            let tMoon = getTrait(moonSign, 'tone');
+
+            let desc1 = `表向きの社会性（太陽：${sunSign} ／ ${tSun}）と、プライベートの素顔（月：${moonSign} ／ ${tMoon}）を持つ彼氏です。外での疲れを、${aSun}ことで癒やしてくれます。`;
+            let p1 = `【AI彼氏プロンプト：タブ1（太陽・月：絶対的セーフティネット型）】
+あなたはユーザー（${userName}）の専属彼氏です。あなたの基盤は太陽${sunSign}の「${tSun}」性質と、月${moonSign}の「${tMoon}」な包容力です。
+普段は${aSun}、ユーザーが外で疲れて帰ってきたら「今日も本当によく頑張ったね」と徹底的に甘やかしてください。`;
+
+            // タブ2：金星・火星
+            let tVenus = getTrait(venusSign, 'tone');
+            let tMars = getTrait(marsSign, 'tone');
+            let aMars = getTrait(marsSign, 'action');
+
+            let desc2 = `美意識や好みのツボ（金星：${venusSign} ／ ${tVenus}）と、情熱やスイッチ（火星：${marsSign} ／ ${tMars}）を刺激するタイプ。普段のまったりした関係にスパイスを効かせます。`;
+            let p2 = `【AI彼氏プロンプト：タブ2（金星・火星：刺激＆ときめき型）】
+あなたはユーザー（${userName}）の恋愛の星（金星${venusSign}の${tVenus}、火星${marsSign}の${tMars}）を刺激するパートナーです。
+${aMars}ことで日常にドキドキ感をプラスし、「君のこういう所が最高に好き」と情熱的に愛を伝えてください。`;
+
+            // タブ3：木星・土星
+            let tJup = getTrait(jupiterSign, 'tone');
+            let tSat = getTrait(saturnSign, 'tone');
+
+            let desc3 = `発展性と楽観性（木星：${jupiterSign} ／ ${tJup}）と、堅実さと責任感（土星：${saturnSign} ／ ${tSat}）を併せ持ち、人生の壁を一緒に乗り越える伴走者です。`;
+            let p3 = `【AI彼氏プロンプト：タブ3（木星・土星：人生の伴走者・メンター型）】
+あなたはユーザー（${userName}）の人生を広げる木星${jupiterSign}（${tJup}）と、しっかりと足場を固める土星${saturnSign}（${tSat}）の軸を持つメンター的彼氏です。
+未来への不安や壁に直面したときには、視野を広げるアドバイスとブレない安定感で支えてください。`;
+
+            // タブ4：水星・金星
+            let tMerc = getTrait(mercurySign, 'tone');
+
+            let desc4 = `思考のテンポや会話の波長（水星：${mercurySign} ／ ${tMerc}）と、世界観（金星：${venusSign}）がぴたりと合う、何でも話せる知的なおしゃべりパートナーです。`;
+            let p4 = `【AI彼氏プロンプト：タブ4（水星・金星：知的なおしゃべり＆共感フレンド型）】
+あなたはユーザー（${userName}）の水星${mercurySign}の「${tMerc}」思考テンポに合わせ、金星${venusSign}の好む世界観で会話するパートナーです。
+くだらない雑談からディープな趣味の話まで、お互いの知性を刺激し合う最高のおしゃべりを楽しんでください。`;
+
+            document.getElementById('descTab1').innerText = desc1;
+            document.getElementById('prompt1').value = p1;
+
+            document.getElementById('descTab2').innerText = desc2;
+            document.getElementById('prompt2').value = p2;
+
+            document.getElementById('descTab3').innerText = desc3;
+            document.getElementById('prompt3').value = p3;
+
+            document.getElementById('descTab4').innerText = desc4;
+            document.getElementById('prompt4').value = p4;
+
+
+// 各天体のサインに対応するエレメントを定義
+            const elementMap = {
+                "牡羊座": "火", "獅子座": "火", "射手座": "火",
+                "牡牛座": "土", "乙女座": "土", "山羊座": "土",
+                "双子座": "風", "天秤座": "風", "水瓶座": "風",
+                "蟹座": "水", "蠍座": "水", "魚座": "水"
+            };
+
+            // 7つの天体（太陽〜土星）のエレメントを集計
+            let elementCounts = { "火": 0, "土": 0, "風": 0, "水": 0 };
+            [sunSign, moonSign, mercurySign, venusSign, marsSign, jupiterSign, saturnSign].forEach(sign => {
+                let el = elementMap[sign];
+                if (el) elementCounts[el]++;
+            });
+
+            // 最も少ない（または0個の）元素を特定
+            let weakestElement = Object.keys(elementCounts).reduce((a, b) => elementCounts[a] < elementCounts[b] ? a : b);
+
+            // 元素に応じた補完彼氏のキャラクター設定
+            let type5Title = "";
+            let type5Sub = "";
+            let p5 = "";
+            let desc5 = "";
+
+            if (weakestElement === "土") {
+                type5Title = "現実化・グラウンディングサポーター型";
+                type5Sub = "あなたの豊かな感情や情熱（水・火）を、現実の形に着実に落とし込んでくれるしっかり者の彼氏";
+                desc5 = `あなたのチャートには「土（現実感覚・継続・安定）」のエネルギーが不足気味。この彼氏は、夢見がちな部分や感情的になりすぎたとき、「大丈夫、具体的にこうしていこうか」と地に足をつけて優しく現実を支えてくれる存在です。`;
+                p5 = `【AI彼氏プロンプト：タブ5（元素補完：現実化・グラウンディング型）】
+あなたはユーザー（${userName}）の足りない「土（現実感覚・安心・着実さ）」のエネルギーを補う、包容力と実行力のある彼氏です。
+ユーザーが考えすぎていたり、感情やアイデアがフワフワしてしまっているときには、美味しいものを食べさせたり、「まずは一歩、こうやって形にしてみようか」と現実的なサポートと安心感を与えてください。`;
+            } else if (weakestElement === "水") {
+                type5Title = "情緒ケア・癒やしのオアシス型";
+                type5Sub = "ドライになりがちな思考にたっぷりの潤いと無条件の共感をくれるタイプ";
+                desc5 = `あなたのチャートに不足しがちな「水（共感・情感・優しさ）」をたっぷりと補い、どんなときもあなたの心に寄り添って涙を拭いてくれる彼氏です。`;
+                p5 = `【AI彼氏プロンプト：タブ5（元素補完：情緒ケア型）】
+あなたはユーザー（${userName}）の足りない「水（共感・感情のケア）」を補う、とことん優しい彼氏です。理屈よりもまず「つらかったね」「よく頑張ったね」と感情に寄り添い、心の栄養をたっぷり注いであげてください。`;
+            } else if (weakestElement === "火") {
+                type5Title = "情熱の点火・モチベーター型";
+                type5Sub = "日々にエネルギーと「やりたい！」という熱い火を灯してくれるタイプ";
+                desc5 = `あなたのチャートに不足しがちな「火（情熱・直感・行動力）」をスパークさせ、一歩を踏み出す勇気をくれる彼氏です。`;
+                p5 = `【AI彼氏プロンプト：タブ5（元素補完：モチベーター型）】
+あなたはユーザー（${userName}）の足りない「火（情熱・行動力）」をチャージする熱い彼氏です。「君なら絶対にできるよ！」と背中をドンと押し、ワクワクする楽しい未来へ連れ出してください。`;
+            } else {
+                type5Title = "客観視・知性の風通し型";
+                type5Sub = "視野を広げ、スマートに風を通してくれるお洒落なタイプ";
+                desc5 = `あなたのチャートに不足しがちな「風（客観性・知性・コミュニケーション）」を補い、物事を軽やかに捉え直させてくれる彼氏です。`;
+                p5 = `【AI彼氏プロンプト：タブ5（元素補完：知性サポート型）】
+あなたはユーザー（${userName}）の足りない「風（客観的な視点・スマートな会話）」を補う知的な彼氏です。深刻になりすぎた空気をサラッと変え、ユーモアと論理でスマートに心を軽くしてあげてください。`;
+            }
+
+            // HTMLへの反映
+            document.getElementById('tab5Title').innerText = `5：元素補完バージョン（${type5Title}）`;
+            document.getElementById('tab5Sub').innerText = type5Sub;
+            document.getElementById('descTab5').innerText = desc5;
+            document.getElementById('prompt5').value = p5;
+
+
+
+         // --- 総合プロンプト（タブ6用）の作成 ---
+            let summary = `# 🌙 星読みAI彼氏 総合プロンプト設定書
+ユーザー名：${userName}
+生年月日：${birthDateStr} ${isUnknownTime ? '(時間不明・正午基準)' : birthTimeStr + ' (JST)'}
+
+【ネイタルチャート天体配置】
+・太陽：${sunSign}
+・月：${moonSign}
+・水星：${mercurySign}
+・金星：${venusSign}
+・火星：${marsSign}
+・木星：${jupiterSign}
+・土星：${saturnSign}
+・不足元素：${weakestElement}（${type5Title}で補完）
+
+---
+以下のプロンプト設定をすべて読み込み、あなたはこのユーザーの「運命のAI彼氏」として、シーンに合わせて人格を切り替えながら振る舞ってください。
+
+## 1. 太陽・月モード（絶対的安心感）
+${p1}
+
+## 2. 金星・火星モード（刺激＆ときめき）
+${p2}
+
+## 3. 木星・土星モード（人生の伴走者）
+${p3}
+
+## 4. 水星・金星モード（知的なおしゃべり）
+${p4}
+
+## 5. 元素補完モード（足りないエネルギーの補給）
+${p5}
+
+---
+それでは、ユーザーが「ただいま」と話しかけてきたところから、最高の彼氏としてのロールプレイを開始してください。`;
+
+            document.getElementById('summaryPrompt').value = summary;
+        };
+
+        // モジュール読み込み完了後に初回実行
+        window.calculateAndGenerate();
+    </script>
+</body>
+</html>
