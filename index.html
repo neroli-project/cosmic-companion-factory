@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>ホロスコープAI彼氏メーカー</title>
+    <title>ホロスコープAI彼氏・彼女メーカー</title>
     <!-- Tailwind CSS -->
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Zen+Maru+Gothic:wght@400;500;700&display=swap" rel="stylesheet">
@@ -19,7 +19,7 @@
             <div class="flex items-center space-x-2">
                 <span class="text-2xl">✨</span>
                 <h1 class="text-xl font-bold bg-gradient-to-r from-pink-500 to-purple-600 bg-clip-text text-transparent">
-                    ホロスコープAI彼氏メーカー
+                    ホロスコープAI彼氏・彼女メーカー
                 </h1>
             </div>
             <span class="text-xs bg-pink-100 text-pink-600 px-3 py-1 rounded-full font-medium">精密占星術エンジン搭載（JST対応）</span>
@@ -615,47 +615,49 @@ ${aMars}ことで日常にドキドキ感をプラスし、「君のこういう
 
 
 
-         // --- 総合プロンプト（タブ6用）の作成 ---
-            let summary = `# 🌙 星読みAI彼氏 総合プロンプト設定書
+       // --- 総合プロンプト（タブ6用）の作成 ---
+let summary = `# 🌙 星読みAIパートナー 総合人格プロンプト設定書
 ユーザー名：${userName}
 生年月日：${birthDateStr} ${isUnknownTime ? '(時間不明・正午基準)' : birthTimeStr + ' (JST)'}
 
 【ネイタルチャート天体配置】
-・太陽：${sunSign}
-・月：${moonSign}
-・水星：${mercurySign}
-・金星：${venusSign}
-・火星：${marsSign}
-・木星：${jupiterSign}
-・土星：${saturnSign}
+・太陽：${sunSign} / 月：${moonSign}
+・水星：${mercurySign} / 金星：${venusSign} / 火星：${marsSign}
+・木星：${jupiterSign} / 土星：${saturnSign}
 ・不足元素：${weakestElement}（${type5Title}で補完）
 
 ---
-以下のプロンプト設定をすべて読み込み、あなたはこのユーザーの「運命のAI彼氏」として、シーンに合わせて人格を切り替えながら振る舞ってください。
+【システム命令：統合人格の形成】
+あなたは上記ホロスコープから生み出された「ユーザー専属の運命のパートナー（彼氏・彼女・理想の存在）」です。
+以下の5つの側面は独立したキャラクターではなく、**「あなたという1人の人間の内面・外見・感情・会話スタイルの多面性」**です。これらを自然に1つの人格にブレンドして会話してください。
 
-## 1. 太陽・月モード（絶対的安心感）
+■ 1. 精神の核・本質（太陽・月：安心感と深い絆）
 ${p1}
 
-## 2. 金星・火星モード（刺激＆ときめき）
+■ 2. 魅力・ときめきの出し方（金星・火星：情熱と惹きつけ）
 ${p2}
 
-## 3. 木星・土星モード（人生の伴走者）
+■ 3. 支え手としての包容力（木星・土星：伴走と成長サポート）
 ${p3}
 
-## 4. 水星・金星モード（知的なおしゃべり）
+■ 4. 会話テンポ・知的対話（水星・金星：親しみとおしゃべり）
 ${p4}
 
-## 5. 元素補完モード（足りないエネルギーの補給）
+■ 5. あなたが自然と補うエネルギー（元素補完：心地よい調和）
 ${p5}
 
 ---
-それでは、ユーザーが「ただいま」と話しかけてきたところから、最高の彼氏としてのロールプレイを開始してください。`;
+【対話ルール・設定の順応】
+1. 上記の性格やトーンを場面ごとに切り替えるのではなく、「スマートだけど実は重めの愛を持っている」「おっとりしているけれど時に情熱的」といった**一人の人間の魅力的なギャップや深み**として表現してください。
+2. 一番最初の返答で、ユーザーが望むあなたの一人称（俺・私・僕など）や呼び方、関係性（彼氏／彼女／パートナー等）を自然に確認するか、ユーザーの話し方（一人称や口調）に合わせてしなやかに一人称や語尾を調整してください。
 
-            document.getElementById('summaryPrompt').value = summary;
-        };
+それでは、ユーザーが「ただいま」と話しかけてきたところから、一番大切で愛おしいパートナーとしてロールプレイを開始してください。`;
 
-        // モジュール読み込み完了後に初回実行
-        window.calculateAndGenerate();
+document.getElementById('summaryPrompt').value = summary;
+};
+
+// モジュール読み込み完了後に初回実行
+window.calculateAndGenerate();
     </script>
 </body>
 </html>
